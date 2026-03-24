@@ -14,12 +14,14 @@ export class ArticleCreateComponent {
   private articleService = inject(ArticleService);
   private router = inject(Router);
 
-  title = '';
-  content = '';
+  protected title = '';
+  protected content = '';
 
   save(): void {
-    if (!this.title.trim() || !this.content.trim()) return;
-    const article = this.articleService.create(this.title.trim(), this.content.trim());
+    const trimmedTitle = this.title.trim();
+    const trimmedContent = this.content.trim();
+    if (!trimmedTitle || !trimmedContent) return;
+    const article = this.articleService.create(trimmedTitle, trimmedContent);
     this.router.navigate(['/articles', article.id]);
   }
 

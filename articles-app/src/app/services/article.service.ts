@@ -10,8 +10,11 @@ export class ArticleService {
   articles$ = this.articlesSubject.asObservable();
 
   private loadFromStorage(): Article[] {
-    const data = localStorage.getItem(this.STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
+    try {
+      return JSON.parse(localStorage.getItem(this.STORAGE_KEY) ?? '[]');
+    } catch {
+      return [];
+    }
   }
 
   private saveToStorage(articles: Article[]): void {
@@ -27,12 +30,13 @@ export class ArticleService {
   }
 
   create(title: string, content: string): Article {
+    const now = new Date().toISOString();
     const article: Article = {
       id: crypto.randomUUID(),
       title,
       content,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: now,
+      updatedAt: now,
     };
     const articles = [...this.articlesSubject.value, article];
     this.saveToStorage(articles);

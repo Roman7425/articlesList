@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ArticleService } from '../../services/article.service';
+import { AnnotationService } from '../../services/annotation.service';
 
 @Component({
   selector: 'app-article-edit',
@@ -12,13 +13,14 @@ import { ArticleService } from '../../services/article.service';
 })
 export class ArticleEditComponent implements OnInit {
   private articleService = inject(ArticleService);
+  private annotationService = inject(AnnotationService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
-  id = '';
-  title = '';
-  content = '';
-  notFound = false;
+  protected id = '';
+  protected title = '';
+  protected content = '';
+  protected notFound = false;
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') ?? '';
@@ -32,8 +34,11 @@ export class ArticleEditComponent implements OnInit {
   }
 
   save(): void {
-    if (!this.title.trim() || !this.content.trim()) return;
-    this.articleService.update(this.id, this.title.trim(), this.content.trim());
+    const trimmedTitle = this.title.trim();
+    const trimmedContent = this.content.trim();
+    if (!trimmedTitle || !trimmedContent) return;
+    this.articleService.update(this.id, trimmedTitle, trimmedContent);
+    this.annotationService.removeOutOfBoundsAnnotations(this.id, trimmedContent.length);
     this.router.navigate(['/articles', this.id]);
   }
 

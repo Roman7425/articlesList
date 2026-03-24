@@ -106,3 +106,57 @@ body {
   resize: vertical;
   line-height: 1.6;
 }
+
+// Form layout
+.form-container {
+  max-width: 800px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+
+  label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #616161;
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+// Empty / not found state
+.not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 60px 20px;
+  color: #9e9e9e;
+}
+
+// Annotation highlights (used inside [innerHTML], must be global)
+.highlight {
+  border-radius: 3px;
+  padding: 0 1px;
+  cursor: pointer;
+  transition: filter 0.15s;
+
+  &:hover {
+    filter: brightness(0.88);
+  }
+}
+
+.highlight-pending {
+  border-radius: 3px;
+  padding: 0 1px;
+  background-color: rgba(25, 118, 210, 0.15);
+  border-bottom: 2px dashed #1976d2;
+}

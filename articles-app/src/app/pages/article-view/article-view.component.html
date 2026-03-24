@@ -1,0 +1,99 @@
+<div class="page">
+  @if (notFound) {
+    <div class="not-found">
+      <p>Статья не найдена.</p>
+      <button class="btn btn-ghost" (click)="goBack()">← К списку</button>
+    </div>
+  } @else if (article) {
+    <header class="page-header">
+      <button class="btn btn-ghost" (click)="goBack()">← Назад</button>
+      <h1>{{ article.title }}</h1>
+      <button class="btn btn-primary" (click)="goToEdit()">Редактировать</button>
+    </header>
+
+    <div class="article-meta">
+      Создано: {{ article.createdAt | date:'dd.MM.yyyy HH:mm' }}
+      @if (article.updatedAt !== article.createdAt) {
+        &nbsp;· Изменено: {{ article.updatedAt | date:'dd.MM.yyyy HH:mm' }}
+      }
+    </div>
+
+    <p class="view-hint">
+      Выделите текст мышью, чтобы добавить аннотацию.
+      С комментарием — <span class="hint-highlight">подсветка фоном</span>,
+      без комментария — <span class="hint-underline">подчёркивание</span>.
+    </p>
+
+    <div
+      class="article-content"
+      #contentRef
+      [innerHTML]="renderedContent"
+      (mouseup)="onMouseUp()"
+      (mouseover)="onContentMouseOver($event)"
+      (mouseleave)="tooltip.show = false"
+    ></div>
+
+    @if (annotations.length > 0) {
+      <section class="annotations-panel">
+        <h3>Аннотации ({{ annotations.length }})</h3>
+        <ul class="annotations-list">
+          @for (ann of annotations; track ann.id) {
+            <li class="annotation-item">
+              <span class="annotation-color-dot" [style.background-color]="ann.color"></span>
+              <div class="annotation-item-body">
+                <span class="annotation-selected-text">«{{ ann.selectedText }}»</span>
+                @if (ann.comment) {
+                  <span class="annotation-comment">{{ ann.comment }}</span>
+                }
+              </div>
+              <button class="btn-icon" (click)="deleteAnnotation(ann.id)" title="Удалить аннотацию">×</button>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+  }
+</div>
+
+@if (popup.show) {
+  <div
+    class="annotation-popup"
+    [style.left.px]="popup.x"
+    [style.top.px]="popup.y"
+  >
+    <div class="popup-header">
+      <span class="popup-title">«{{ truncateText(popup.text) }}»</span>
+      <button class="btn-icon" (click)="closePopup()">×</button>
+    </div>
+    <div class="color-picker">
+      @for (color of colors; track color) {
+        <button
+          class="color-btn"
+          [style.background-color]="color"
+          [class.active]="popup.color === color"
+          (click)="popup.color = color"
+        ></button>
+      }
+    </div>
+    <textarea
+      class="textarea popup-textarea"
+      placeholder="Комментарий — оставьте пустым для подчёркивания"
+      rows="3"
+      [(ngModel)]="popup.comment"
+    ></textarea>
+    <div class="popup-actions">
+      <button class="btn btn-ghost" (click)="closePopup()">Отмена</button>
+      <button class="btn btn-primary" (click)="saveAnnotation()">Сохранить</button>
+    </div>
+  </div>
+}
+
+@if (tooltip.show && tooltip.text) {
+  <div
+    class="annotation-tooltip"
+    [style.left.px]="tooltip.x"
+    [style.top.px]="tooltip.y"
+  >
+    {{ tooltip.text }}
+  </div>
+}
