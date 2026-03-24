@@ -1,0 +1,28 @@
+<div class="page">
+  <header class="page-header">
+    <h1>Статьи</h1>
+    <button class="btn btn-primary" (click)="goToCreate()">+ Новая статья</button>
+  </header>
+
+  <main>
+    @if (articles$ | async; as articles) {
+      @if (articles.length === 0) {
+        <div class="empty-state">
+          <p>Нет статей. Создайте первую!</p>
+        </div>
+      } @else {
+        <ul class="articles-list">
+          @for (article of articles; track article.id) {
+            <li class="article-card" (click)="goToView(article.id)">
+              <div class="article-card__body">
+                <h2 class="article-card__title">{{ article.title }}</h2>
+                <span class="article-card__date">{{ article.createdAt | date:'dd.MM.yyyy HH:mm' }}</span>
+              </div>
+              <button class="btn btn-danger" (click)="delete($event, article.id)">Удалить</button>
+            </li>
+          }
+        </ul>
+      }
+    }
+  </main>
+</div>
