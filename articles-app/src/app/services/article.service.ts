@@ -22,6 +22,10 @@ export class ArticleService {
     return this.articles$.pipe(map(articles => articles.find(a => a.id === id)));
   }
 
+  getByIdSnapshot(id: string): Article | undefined {
+    return this.articlesSubject.value.find(a => a.id === id);
+  }
+
   create(title: string, content: string): Article {
     const article: Article = {
       id: crypto.randomUUID(),
